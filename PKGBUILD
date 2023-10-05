@@ -343,7 +343,14 @@ build() {
   CXXFLAGS=${CXXFLAGS/-Wp,-D_GLIBCXX_ASSERTIONS}
 
   gn gen out/Release --args="${_flags[*]}"
-  ninja -C out/Release chrome chrome_sandbox chromedriver.unstripped
+  if check_buildoption "distcc" "y"; then
+    local jobs_count=$(($(nproc) * 4))
+    echo "Building with distcc, overwriting jobs count to $jobs_count"
+    local jobs="-j $jobs_count"
+  else
+    local jobs=
+  fi
+  ninja -C out/Release $jobs chrome chrome_sandbox chromedriver.unstripped
 }
 
 package() {
