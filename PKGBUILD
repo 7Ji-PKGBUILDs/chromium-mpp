@@ -41,7 +41,7 @@ optdepends=('pipewire: WebRTC desktop sharing under Wayland'
             'org.freedesktop.secrets: password storage backend on GNOME / Xfce'
             'kwallet: support for storing passwords in KWallet on Plasma')
 options=('!lto') # Chromium adds its own flags for ThinLTO
-source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver.tar.xz
+source=(https://github.com/7Ji-PKGBUILDs/chromium-mpp/releases/download/chromium-$pkgver/chromium-$pkgver.tar.zst
         https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver/chromium-launcher-$_launcher_ver.tar.gz
         add-some-typename-s-that-are-required-in-C-17.patch
         REVERT-disable-autoupgrading-debug-info.patch
@@ -55,7 +55,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         0003-Fix-eu-strip-build-for-newer-GCC.patch
         0004-Optimize-eu-strip-building-logic.patch
         git+https://sourceware.org/git/elfutils.git)
-sha256sums=('a9f3440feeab51f56b199797b83b458ca545bf67e114c62b21470fadd5a41dea'
+sha256sums=('0e1a398ce3cc541fcbf078d3979bd9a6df4d2bda856198f286bd4175d053e8d5'
             '213e50f48b67feb4441078d50b0fd431df34323be15be97c55302d3fdac4483a'
             '621ed210d75d0e846192c1571bb30db988721224a41572c27769c0288d361c11'
             '1b782b0f6d4f645e4e0daa8a4852d63f0c972aa0473319216ff04613a0592a69'
