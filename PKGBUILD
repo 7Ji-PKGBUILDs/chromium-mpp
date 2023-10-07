@@ -344,7 +344,7 @@ build() {
 
   gn gen out/Release --args="${_flags[*]}"
   if check_buildoption "distcc" "y"; then
-    local jobs_count=$(($(nproc) * 4))
+    local jobs_count=$(($(nproc) * 3))
     echo "Building with distcc, overwriting jobs count to $jobs_count"
     local jobs="-j $jobs_count"
   else
