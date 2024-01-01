@@ -23,7 +23,7 @@ _pkgname=chromium
 pkgname=${_pkgname}-mpp
 _pkgver_short=114.0.5735 # MPP patches are released for x.y.z
 pkgver=${_pkgver_short}.198
-pkgrel=3
+pkgrel=4
 _launcher_ver=8
 _manual_clone=0
 pkgdesc="A web browser built for speed, simplicity, and security. Patched with Rockchip MPP support."
@@ -44,6 +44,7 @@ options=('!lto') # Chromium adds its own flags for ThinLTO
 source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver.tar.xz
         https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver/chromium-launcher-$_launcher_ver.tar.gz
         add-some-typename-s-that-are-required-in-C-17.patch
+        icu-74.patch
         REVERT-disable-autoupgrading-debug-info.patch
         download-bubble-typename.patch
         webauthn-variant.patch
@@ -58,6 +59,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
 sha256sums=('a9f3440feeab51f56b199797b83b458ca545bf67e114c62b21470fadd5a41dea'
             '213e50f48b67feb4441078d50b0fd431df34323be15be97c55302d3fdac4483a'
             '621ed210d75d0e846192c1571bb30db988721224a41572c27769c0288d361c11'
+            'ff9ebd86b0010e1c604d47303ab209b1d76c3e888c423166779cefbc22de297f'
             '1b782b0f6d4f645e4e0daa8a4852d63f0c972aa0473319216ff04613a0592a69'
             'd464eed4be4e9bf6187b4c40a759c523b7befefa25ba34ad6401b2a07649ca2a'
             '590fabbb26270947cb477378b53a9dcd17855739076b4af9983e1e54dfcab6d7'
@@ -215,6 +217,9 @@ prepare() {
 
   # Upstream fixes
   patch -Np1 -i ../add-some-typename-s-that-are-required-in-C-17.patch
+
+  # Fix build with ICU 74
+  patch -Np1 -i ../icu-74.patch
 
   # Revert addition of compiler flag that needs newer clang
   patch -Rp1 -i ../REVERT-disable-autoupgrading-debug-info.patch
