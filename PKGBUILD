@@ -239,7 +239,9 @@ prepare() {
 
   # Link to system tools required by the build
   mkdir -p third_party/node/linux/node-linux-x64/bin
+  rm -f third_party/node/linux/node-linux-x64/bin/node
   ln -s /usr/bin/node third_party/node/linux/node-linux-x64/bin/
+  rm -f third_party/jdk/current/bin/java
   ln -s /usr/bin/java third_party/jdk/current/bin/
 
   # Remove bundled libraries for which we will use the system copies; this
