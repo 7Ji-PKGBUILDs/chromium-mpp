@@ -21,54 +21,50 @@ highmem=1
 
 _pkgname=chromium
 pkgname=${_pkgname}-mpp
-_pkgver_short=114.0.5735 # MPP patches are released for x.y.z
-pkgver=${_pkgver_short}.198
-pkgrel=4
+_pkgver_short=122.0.6261
+pkgver=${_pkgver_short}.128
+pkgrel=1
 _launcher_ver=8
 _manual_clone=0
+_system_clang=1
 pkgdesc="A web browser built for speed, simplicity, and security. Patched with Rockchip MPP support."
-arch=('aarch64')
+arch=('x86_64' 'aarch64')
 url="https://www.chromium.org/Home"
-license=('BSD')
+license=('BSD-3-Clause')
 depends=('gtk3' 'nss' 'alsa-lib' 'xdg-utils' 'libxss' 'libcups' 'libgcrypt'
          'ttf-liberation' 'systemd' 'dbus' 'libpulse' 'pciutils' 'libva'
          'libffi' 'desktop-file-utils' 'hicolor-icon-theme')
 makedepends=('python' 'gn' 'ninja' 'clang' 'lld' 'gperf' 'nodejs' 'pipewire'
-             'qt5-base' 'java-runtime-headless' 'git')
+             'rust' 'qt5-base' 'java-runtime-headless' 'git')
 optdepends=('pipewire: WebRTC desktop sharing under Wayland'
             'kdialog: support for native dialogs in Plasma'
             'qt5-base: enable Qt5 with --enable-features=AllowQt'
+            'gtk4: for --gtk-version=4 (GTK4 IME might work better on Wayland)'
             'org.freedesktop.secrets: password storage backend on GNOME / Xfce'
             'kwallet: support for storing passwords in KWallet on Plasma')
 options=('!lto') # Chromium adds its own flags for ThinLTO
 source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver.tar.xz
         https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver/chromium-launcher-$_launcher_ver.tar.gz
-        add-some-typename-s-that-are-required-in-C-17.patch
-        icu-74.patch
-        REVERT-disable-autoupgrading-debug-info.patch
-        download-bubble-typename.patch
-        webauthn-variant.patch
-        random-fixes-for-gcc13.patch
-        disable-GlobalMediaControlsCastStartStop.patch
+        https://gitlab.com/Matt.Jolly/chromium-patches/-/archive/${pkgver%%.*}/chromium-patches-${pkgver%%.*}.tar.bz2
+        support-ICU-74-in-LazyTextBreakIterator.patch
+        drop-flag-unsupported-by-clang17.patch
+        compiler-rt-adjust-paths.patch
         use-oauth2-client-switches-as-default.patch
         0001-widevine-support-for-arm.patch
         0002-Run-blink-bindings-generation-single-threaded.patch
         0003-Fix-eu-strip-build-for-newer-GCC.patch
         0004-Optimize-eu-strip-building-logic.patch
         git+https://sourceware.org/git/elfutils.git)
-sha256sums=('a9f3440feeab51f56b199797b83b458ca545bf67e114c62b21470fadd5a41dea'
+sha256sums=('51757e7ecf5bb1db4881562d021547be5f8065e4f22a6ba9bf6e9a3a0d32c2ea'
             '213e50f48b67feb4441078d50b0fd431df34323be15be97c55302d3fdac4483a'
-            '621ed210d75d0e846192c1571bb30db988721224a41572c27769c0288d361c11'
-            'ff9ebd86b0010e1c604d47303ab209b1d76c3e888c423166779cefbc22de297f'
-            '1b782b0f6d4f645e4e0daa8a4852d63f0c972aa0473319216ff04613a0592a69'
-            'd464eed4be4e9bf6187b4c40a759c523b7befefa25ba34ad6401b2a07649ca2a'
-            '590fabbb26270947cb477378b53a9dcd17855739076b4af9983e1e54dfcab6d7'
-            'ba4dd0a25a4fc3267ed19ccb39f28b28176ca3f97f53a4e9f5e9215280040ea0'
-            '7f3b1b22d6a271431c1f9fc92b6eb49c6d80b8b3f868bdee07a6a1a16630a302'
+            '1f6acf165578288dc84edc7d9dcfabf7d38f55153b63a37ee5afa929f0e2baad'
+            '8c256b2a9498a63706a6e7a55eadbeb8cc814be66a75e49aec3716c6be450c6c'
+            '3bd35dab1ded5d9e1befa10d5c6c4555fe0a76d909fb724ac57d0bf10cb666c1'
+            'b3de01b7df227478687d7517f61a777450dca765756002c80c4915f271e2d961'
             'e393174d7695d0bafed69e868c5fbfecf07aa6969f3b64596d0bae8b067e1711'
-            'fb2eb2d3d140f52717eb46f7f6b9300138862771dde02b9ca28d79eef62c81f8'
-            '17a404e586b1f2fdc5a6f1e7795aaabd77bd5c27547212301d588b802138a332'
-            '10eda8342a10ffec2d25cfc469f788923f5b32b594b0c6574c35a9b78f346be0'
+            'b5bb3d0e2cd06aa92bb0ea62d6915dac1635cee79e9e1405cf17fe471baa393e'
+            '01c8742f987e158245959561db7f7529254a81491954174be2ef8a4f226cbf42'
+            '4b543a4f12b8f00765d3a2812c5452a60c5c07babc00fe2036edd6467462ecfe'
             'ac940ff39aae2dfe73967195eeb39fabe439eaa4ba5d5cd3f30ca1fb2030252c'
             'SKIP')
 
@@ -83,26 +79,22 @@ conflicts=('chromium' 'chromedriver')
 depends+=('libv4l-rkmpp')
 optdepends+=('libmali: blob drivers needed for rendering after MPP decoding')
 _mpp_patches=(
-  '0001-media-gpu-v4l2-Support-V4L2-VDA-with-libv4l2-on-Linu.patch'
-  '0002-HACK-media-gpu-v4l2-Allow-V4L2-VEA-on-non-chromeos-p.patch'
-  '0003-Add-mmap-via-libv4l-to-generic_v4l2_device.patch'
-  '0004-media-capture-linux-Support-libv4l2-plugins.patch'
-  '0005-cld3-Avoid-unaligned-accesses.patch'
-  '0006-media-gpu-v4l2-Use-POLLIN-for-pending-event.patch'
-  '0007-media-capture-linux-Prefer-using-the-first-device.patch'
-  '0008-media-gpu-v4l2-Fix-compile-error-when-ozone-not-enab.patch'
-  '0009-ui-events-ozone-Define-SW_PEN_INSERTED-for-old-kerne.patch'
+  '0001-HACK-media-Support-V4L2-video-decoder.patch'
+  '0002-HACK-media-gpu-v4l2-Enable-V4L2-VEA.patch'
+  '0003-media-gpu-v4l2-Gen-libv4l2_stubs.patch'
+  '0004-media-gpu-v4l2-Support-libv4l2-plugins.patch'
+  '0005-media-capture-linux-Support-libv4l2-plugins.patch'
+  '0006-cld3-Avoid-unaligned-accesses.patch'
+  '0007-media-gpu-v4l2-Use-POLLIN-for-pending-event.patch'
+  '0008-media-capture-linux-Prefer-using-the-first-device.patch'
+  '0009-media-gpu-v4l2-Fix-compile-error-when-ozone-not-enab.patch'
   '0010-Create-new-fence-when-there-s-no-in-fences.patch'
   '0011-HACK-ozone-wayland-Force-disable-implicit-external-s.patch'
   '0012-HACK-media-capture-linux-Allow-camera-without-suppor.patch'
   '0013-content-gpu-Only-depend-dri-for-X11.patch'
-  '0014-HACK-media-Disable-chromeos-direct-video-decoder-by-.patch'
-  '0015-media-Support-HEVC-in-V4L2-VDA.patch'
-  '0016-media-gpu-chromeos-Define-new-formats-for-old-kernel.patch'
-  '0017-media-Support-AV1-in-V4L2-VDA.patch'
-  '0018-media-gpu-sandbox-Only-depend-dri-for-X11.patch'
-  '0019-HACK-ui-gl-Force-enabling-validating-command-decoder.patch'
-  '0020-ui-gfx-linux-Force-disabling-modifiers.patch'
+  '0014-media-gpu-sandbox-Only-depend-dri-for-X11.patch'
+  '0015-HACK-ui-gl-Force-enabling-validating-command-decoder.patch'
+  '0016-ui-gfx-linux-Force-disabling-modifiers.patch'
 )
 _mpp_commit='7f01be8b695ed27220c4fb3d92f96f65aeafc755'
 _mpp_parent="https://github.com/JeffyCN/meta-rockchip/raw/${_mpp_commit}/dynamic-layers/recipes-browser/chromium/chromium_${_pkgver_short}/"
@@ -110,59 +102,55 @@ for _mpp_patch in ${_mpp_patches[@]}; do
   source+=("mpp-${_mpp_patch}::${_mpp_parent}${_mpp_patch}")
 done
 # Local patches on top of the MPP patches
-_mpp_arch_patches=('0001-v4l2_device.h-always-lookup-libv4l2-at-usr-lib.patch')
+_mpp_arch_patches=('0001-gpu-sandbox-always-lookup-libv4l2-at-usr-lib-libv4l2.patch')
 source+=(mpp-arch-"${_mpp_arch_patches[0]}")
 sha256sums+=(
   # MPP patches
-  'ddfa54cd7f67c6f8ce6a60d665d4fca6fc642b09b6433a0820f126f53d2e546a'
-  'e6089f4fb42cf3d0dd3d616a930b15cb798d6cbc3e3c742b5cffe822fcd579e1'
-  'c3f6ef31304473c90b9e9ea028d4c6a6e15d37888b34df90efa07f0f29bdec88'
-  'e6d31c2445f81f0a30607d1fa51a08c928c8e701e9dcc397b172cdaf5a3fe2c3'
-  '77b1d5a8b75e2131d8e5dd03d6a3b6a9c01f96328373b030a8aec5c177c25fab'
-  '130ed4457e5e1147d7599efe9b2fee3a8d7f84d6fdf7126d3ee8a1cf88fa8a0a'
-  'c4797fa2c6b7f0429bf5bd11a2e3992e9048ac1d2e81b16e5705d81087fb666c'
-  '6b8527c77a2656a1681e6c64562df9fddecc133ab45e292d6d79b39a15f255a4'
-  '46a86a521b78dc900be6d7f3e32cb2782197e54fce1cebd8ac3c7cd90223f6cc'
-  '8f200d9a1d327532a98383bfd34fbe8944c5c8d5e11be4985928ed2eba28bd91'
-  '027d274721829746753ede2eebbf140d78e0a7df6349b901ef464df424960c07'
-  '0840c0fd9a4d81a4d77af9761c317d0b0500c5b23869cc919f69886c6dfefee9'
-  '3ec89cb09f248b9a8e358959d6d4a91bcaef072964bfda98c71cfd0b839f1ccb'
-  '81d4ff6b78c4f6962ce75fe514d326650aed4bc7153ee31a28616ff24b16fb73'
-  '4483fb6bb41fc40f0b2b34b1ded22fed3258b2e0b14dd97fa34ded36fb8efec5'
-  '485bcb4cf4bc17660203853c682ed8b668d2f222a3e0eb36c0996e8c2cd53e6c'
-  'c17147edd83dafb811bb8bc92b33921065225eadc665bb706812ef6e5f08af18'
-  '5c8977d5d5eaba5d5a557fa4f8fefbb8f2a788a25569659d4d205a328b093f6e'
-  'a2f827dfb6a0bb4cc222fe1e7f09de1db4537f0da1b1a8da0e84bb65a9a5d599'
-  '9afa1330d0dad5adffe5181bbb7f5eedb0a44c4c2981b9d1a68748bf192a6ea8'
+  '559c49f8267694eecf6795b397b4b890804673b01265a8a88ff0ab9a995f33de'
+  '7b2212ff704d95513784469a652fead3e79a60816df4e5b417ec059b87118ba0'
+  'd491e14c108c6291a1a6ca0be6b53c3a1bfa5f1799658e01efad4e138a7d81b3'
+  'f6f242a3f70fc46247adc7a82fc430d3eaee7d8dd45b8eda59d200f93372d7d0'
+  'f611ac0af1cccbcebf9fd1fa43b730c8d962b016a04918d731aff22cff008e7a'
+  '3de6682050c2fc055177f8de0ca44391a0e44f983b3400d42e8658a14c837ac1'
+  'd2f06ebad3acc29ec7d569dbfaa2b72d73ea0db0eea8f07f1869c7592d6ca9d4'
+  '9e611e342be2ecde73a6cbc81c3ce8a83c226bd1e477ce3f57cdafdbc209a559'
+  '867d6384c5ba82e10068d138251b0e17aa844df035eb4f54fcb8802d796c616f'
+  '66bc90f355eb539492fbb3465f05091bee699d86df6bdcc658dc27fef4f13421'
+  '9d39e04e1f0c57957723119e1e81b4d86cbd42bec5a5dd01845443f0d11c433f'
+  '6949a7383a0827edbf11b36cab0f3ea832d687079636ac8cb22dc886417caada'
+  '8189807ca7a19dbc135de91d71fb499ec288a772a2737e1c480b6402a5324719'
+  '65db39756549bb7b4399219c97f5ed1fb29b633d8ccc0cc44b5888cb3facce32'
+  '2dc59ef59f99261d2e826e3dc8f3657d66c3507bbf63e0c657683f61dd99fd3f'
+  '9e9f6138e5f67382446fead11414b31135738dd1e2e5ff1270e8228ee50f5a05'
   # Local patches on top of the MPP patches
-  '91c4aa315926af425321e2e822f93779e212e790b9463fe6b646ef9a4ae4ddd6'
+  'dd35502f7ec6452bb885482403e131986b9fbbf6aebb6910ac747fc169bbfe73'
 )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
 # Keys are the names in the above script; values are the dependencies in Arch
 declare -gA _system_libs=(
-  [brotli]=brotli
+  #[brotli]=brotli
   [dav1d]=dav1d
-  [ffmpeg]=ffmpeg
+  #[ffmpeg]=ffmpeg    # YouTube playback stopped working in Chromium 120
   [flac]=flac
   [fontconfig]=fontconfig
   [freetype]=freetype2
   [harfbuzz-ng]=harfbuzz
   [icu]=icu
-  [jsoncpp]=jsoncpp
-  #[libaom]=aom      # https://aomedia.googlesource.com/aom/+/706ee36dcc82
-  #[libavif]=libavif # https://github.com/AOMediaCodec/libavif/commit/4d2776a3
+  #[jsoncpp]=jsoncpp  # needs libstdc++
+  #[libaom]=aom
+  #[libavif]=libavif  # needs https://github.com/AOMediaCodec/libavif/commit/5410b23f76
   [libdrm]=
   [libjpeg]=libjpeg
   [libpng]=libpng
   #[libvpx]=libvpx
   [libwebp]=libwebp
-  #[libxml]=libxml2  # must be built-in if libxslt is built-in
-  #[libxslt]=libxslt # libxslt >= 1.1.39-1 breaks the build
+  [libxml]=libxml2
+  [libxslt]=libxslt
   [opus]=opus
-  #[re2]=re2         # The current re2 (2023-08-01) breaks the build
-  [snappy]=snappy
-  [woff2]=woff2
+  #[re2]=re2          # needs libstdc++
+  #[snappy]=snappy    # needs libstdc++
+  #[woff2]=woff2      # needs libstdc++
   [zlib]=minizip
 )
 _unwanted_bundled_libs=(
@@ -216,34 +204,36 @@ prepare() {
   patch -Np1 -i ../use-oauth2-client-switches-as-default.patch
 
   # Upstream fixes
-  patch -Np1 -i ../add-some-typename-s-that-are-required-in-C-17.patch
+  patch -Np1 -i ../support-ICU-74-in-LazyTextBreakIterator.patch
 
-  # Fix build with ICU 74
-  patch -Np1 -i ../icu-74.patch
+  # Drop compiler flag that needs newer clang
+  patch -Np1 -i ../drop-flag-unsupported-by-clang17.patch
 
-  # Revert addition of compiler flag that needs newer clang
-  patch -Rp1 -i ../REVERT-disable-autoupgrading-debug-info.patch
+  # Allow libclang_rt.builtins from compiler-rt >= 16 to be used
+  patch -Np1 -i ../compiler-rt-adjust-paths.patch
 
-  # Disable kGlobalMediaControlsCastStartStop by default
-  # https://crbug.com/1314342
-  patch -Np1 -i ../disable-GlobalMediaControlsCastStartStop.patch
-
-  # Build fixes
-  patch -Np1 -i ../download-bubble-typename.patch
-  patch -Np1 -i ../webauthn-variant.patch
-  patch -Np1 -i ../random-fixes-for-gcc13.patch
+  # Fixes for building with libstdc++ instead of libc++
+  patch -Np1 -i ../chromium-patches-*/chromium-114-ruy-include.patch
+  patch -Np1 -i ../chromium-patches-*/chromium-117-material-color-include.patch
 
   # MPP Patches
   for _mpp_patch in ${_mpp_patches[@]}; do
     patch -Np1 -i ../mpp-${_mpp_patch}
   done
 
-  patch -Np1 -i ../mpp-arch-${_mpp_arch_patches[0]}
-
   # Link to system tools required by the build
   mkdir -p third_party/node/linux/node-linux-x64/bin
   ln -s /usr/bin/node third_party/node/linux/node-linux-x64/bin/
   ln -s /usr/bin/java third_party/jdk/current/bin/
+
+  if (( !_system_clang )); then
+    # Use prebuilt rust as system rust cannot be used due to the error:
+    #   error: the option `Z` is only accepted on the nightly compiler
+    ./tools/rust/update_rust.py
+
+    # To link to rust libraries we need to compile with prebuilt clang
+    ./tools/clang/scripts/update.py
+  fi
 
   # Remove bundled libraries for which we will use the system copies; this
   # *should* do what the remove_bundled_libraries.py script does, with the
@@ -272,22 +262,27 @@ build() {
   elfutils_git="${srcdir}/elfutils/.git" ./build.sh
   popd
 
-  export CC=clang
-  export CXX=clang++
-  export AR=ar
-  export NM=nm
+  if (( _system_clang )); then
+    export CC=clang
+    export CXX=clang++
+    export AR=ar
+    export NM=nm
+  else
+    local _clang_path="$PWD/third_party/llvm-build/Release+Asserts/bin"
+    export CC=$_clang_path/clang
+    export CXX=$_clang_path/clang++
+    export AR=$_clang_path/llvm-ar
+    export NM=$_clang_path/llvm-nm
+  fi
 
   local _flags=(
     'custom_toolchain="//build/toolchain/linux/unbundle:default"'
     'host_toolchain="//build/toolchain/linux/unbundle:default"'
-    'clang_base_path="/usr"'
-    'clang_use_chrome_plugins=false'
     'clang_use_default_sample_profile=false'
     'use_allocator="none"'
     'is_official_build=true' # implies is_cfi=true on x86_64
     'symbol_level=0' # sufficient for backtraces on x86(_64)
     'is_cfi=false'
-    'chrome_pgo_phase=0'
     'treat_warnings_as_errors=false'
     'disable_fieldtrial_testing_config=true'
     'blink_enable_generated_code_formatting=false'
@@ -295,8 +290,7 @@ build() {
     'proprietary_codecs=true'
     'rtc_use_pipewire=true'
     'link_pulseaudio=true'
-    'use_custom_libcxx=false'
-    'use_gnome_keyring=false'
+    'use_custom_libcxx=true' # https://github.com/llvm/llvm-project/issues/61705
     'use_gold=false'
     'use_sysroot=false'
     'use_system_libffi=true'
@@ -308,6 +302,27 @@ build() {
 
   if [[ -n ${_system_libs[icu]+set} ]]; then
     _flags+=('icu_use_data_file=false')
+  fi
+
+  if (( _system_clang )); then
+     local _clang_version=$(
+       clang --version | grep -m1 version | sed 's/.* \([0-9]\+\).*/\1/')
+
+    _flags+=(
+      'clang_base_path="/usr"'
+      'clang_use_chrome_plugins=false'
+      "clang_version=\"$_clang_version\""
+      'chrome_pgo_phase=0' # needs newer clang to read the bundled PGO profile
+    )
+
+    # Allow the use of nightly features with stable Rust compiler
+    # https://github.com/ungoogled-software/ungoogled-chromium/pull/2696#issuecomment-1918173198
+    export RUSTC_BOOTSTRAP=1
+
+    _flags+=(
+      'rust_sysroot_absolute="/usr"'
+      "rustc_version=\"$(rustc --version)\""
+    )
   fi
 
   if [[ $CARCH == "armv7h" ]]; then
