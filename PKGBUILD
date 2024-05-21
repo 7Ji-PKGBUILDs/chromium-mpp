@@ -87,8 +87,7 @@ _mpp_patches=(
   '0012-HACK-media-capture-linux-Allow-camera-without-suppor.patch'
   '0013-content-gpu-Only-depend-dri-for-X11.patch'
   '0014-media-gpu-sandbox-Only-depend-dri-for-X11.patch'
-  '0015-HACK-ui-gl-Force-enabling-validating-command-decoder.patch'
-  '0016-ui-gfx-linux-Force-disabling-modifiers.patch'
+  '0015-ui-gfx-linux-Force-disabling-modifiers.patch'
 )
 _mpp_commit='6ac0b9a2c15d520ab6ef03fb98c78b5e8388dbce'
 _mpp_parent="https://github.com/JeffyCN/meta-rockchip/raw/${_mpp_commit}/dynamic-layers/recipes-browser/chromium/chromium_${_pkgver_short}/"
@@ -100,22 +99,21 @@ _mpp_arch_patches=('0001-gpu-sandbox-always-lookup-libv4l2-at-usr-lib-libv4l2.pa
 source+=(mpp-arch-"${_mpp_arch_patches[0]}")
 sha256sums+=(
   # MPP patches
-  '559c49f8267694eecf6795b397b4b890804673b01265a8a88ff0ab9a995f33de'
-  '7b2212ff704d95513784469a652fead3e79a60816df4e5b417ec059b87118ba0'
-  'd491e14c108c6291a1a6ca0be6b53c3a1bfa5f1799658e01efad4e138a7d81b3'
-  'f6f242a3f70fc46247adc7a82fc430d3eaee7d8dd45b8eda59d200f93372d7d0'
-  'f611ac0af1cccbcebf9fd1fa43b730c8d962b016a04918d731aff22cff008e7a'
-  '3de6682050c2fc055177f8de0ca44391a0e44f983b3400d42e8658a14c837ac1'
-  'd2f06ebad3acc29ec7d569dbfaa2b72d73ea0db0eea8f07f1869c7592d6ca9d4'
-  '9e611e342be2ecde73a6cbc81c3ce8a83c226bd1e477ce3f57cdafdbc209a559'
-  '867d6384c5ba82e10068d138251b0e17aa844df035eb4f54fcb8802d796c616f'
-  '66bc90f355eb539492fbb3465f05091bee699d86df6bdcc658dc27fef4f13421'
-  '9d39e04e1f0c57957723119e1e81b4d86cbd42bec5a5dd01845443f0d11c433f'
-  '6949a7383a0827edbf11b36cab0f3ea832d687079636ac8cb22dc886417caada'
-  '8189807ca7a19dbc135de91d71fb499ec288a772a2737e1c480b6402a5324719'
-  '65db39756549bb7b4399219c97f5ed1fb29b633d8ccc0cc44b5888cb3facce32'
-  '2dc59ef59f99261d2e826e3dc8f3657d66c3507bbf63e0c657683f61dd99fd3f'
-  '9e9f6138e5f67382446fead11414b31135738dd1e2e5ff1270e8228ee50f5a05'
+  'bb248d44a80aae7c089a179f2cbf3b9727f8f83e889f2cf3f3b9d60151174fb9'
+  'ba854d12f91e47c7abe9536eaef8c512486fc876383e1f9c9f4a4532104191ce'
+  '76c6dab225cf0dfe7a258738dfa73707f62859d3dcd2381144adb9770df26d9d'
+  '1987977e184b9feed66db169d63734ac5145913720428a49d18058b58928fb7c'
+  'eb238021faee4d21123b5cf94a73e4ac53c0b03e7e188f100f879af3a47fe5cf'
+  '667a3c6024a5a5a087cf36f0250b1559992103dead7a8d8fb590176b67d1351f'
+  '81ad86b8aa770ee93d70ee52b4c14eca86d5953dce9d8a96823b18064dac8b2f'
+  '47fc4b6d00e43e91b6229b51fc4380a76a19d06ea4ccdb29ccb3b53c14f8c015'
+  '7b599c97371fa165d0d3cbd9c79c34ad3adabd65f382871dcb98b797bfbef737'
+  'ef3f9ef2aa4c5514aec46006a5ac299c9ab79432f4bdd279e02896a4bceca597'
+  '2f21527a31ac0114008d3bc181aae1165ee57da9748edd13405b3efa3a8fea9c'
+  '32b53abac0511a2fddf7b851d036fd07e008a486dd30f4bd81f608b07c2a1827'
+  '3d4eedc58535f66bc1d96a0078d97180786ec1cca8286c4bdd71bfa95aa9d199'
+  '70039033dd1da0fa443b7969034bc41e19ae8cb3ea66a21c755fa9bd7a268f09'
+  '142bce5fcd4c5204aa9bcc4acd7aae5295b9b38420d73d5d2bb56e367dcc0dec'
   # Local patches on top of the MPP patches
   'dd35502f7ec6452bb885482403e131986b9fbbf6aebb6910ac747fc169bbfe73'
 )
