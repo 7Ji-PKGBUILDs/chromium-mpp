@@ -250,11 +250,6 @@ build() {
 
   cd chromium-$pkgver
 
-  # Rebuild eu-strip
-  pushd buildtools/third_party/eu-strip
-  elfutils_git="${srcdir}/elfutils/.git" ./build.sh
-  popd
-
   if (( _system_clang )); then
     export CC=clang
     export CXX=clang++
