@@ -35,7 +35,7 @@ depends=('gtk3' 'nss' 'alsa-lib' 'xdg-utils' 'libxss' 'libcups' 'libgcrypt'
          'ttf-liberation' 'systemd' 'dbus' 'libpulse' 'pciutils' 'libva'
          'libffi' 'desktop-file-utils' 'hicolor-icon-theme')
 makedepends=('python' 'gn' 'ninja' 'clang' 'lld' 'gperf' 'nodejs' 'pipewire'
-             'rust' 'qt5-base' 'java-runtime-headless' 'git')
+             'rust' 'qt5-base' 'java-runtime-headless' 'git' 'elfutils')
 optdepends=('pipewire: WebRTC desktop sharing under Wayland'
             'kdialog: support for native dialogs in Plasma'
             'qt5-base: enable Qt5 with --enable-features=AllowQt'
@@ -51,10 +51,7 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         compiler-rt-adjust-paths.patch
         use-oauth2-client-switches-as-default.patch
         0001-widevine-support-for-arm.patch
-        0002-Run-blink-bindings-generation-single-threaded.patch
-        0003-Fix-eu-strip-build-for-newer-GCC.patch
-        0004-Optimize-eu-strip-building-logic.patch
-        git+https://sourceware.org/git/elfutils.git)
+        0002-Run-blink-bindings-generation-single-threaded.patch)
 sha256sums=('51757e7ecf5bb1db4881562d021547be5f8065e4f22a6ba9bf6e9a3a0d32c2ea'
             '213e50f48b67feb4441078d50b0fd431df34323be15be97c55302d3fdac4483a'
             '1f6acf165578288dc84edc7d9dcfabf7d38f55153b63a37ee5afa929f0e2baad'
@@ -63,10 +60,7 @@ sha256sums=('51757e7ecf5bb1db4881562d021547be5f8065e4f22a6ba9bf6e9a3a0d32c2ea'
             'b3de01b7df227478687d7517f61a777450dca765756002c80c4915f271e2d961'
             'e393174d7695d0bafed69e868c5fbfecf07aa6969f3b64596d0bae8b067e1711'
             'b5bb3d0e2cd06aa92bb0ea62d6915dac1635cee79e9e1405cf17fe471baa393e'
-            '01c8742f987e158245959561db7f7529254a81491954174be2ef8a4f226cbf42'
-            '4b543a4f12b8f00765d3a2812c5452a60c5c07babc00fe2036edd6467462ecfe'
-            'ac940ff39aae2dfe73967195eeb39fabe439eaa4ba5d5cd3f30ca1fb2030252c'
-            'SKIP')
+            '01c8742f987e158245959561db7f7529254a81491954174be2ef8a4f226cbf42')
 
 if (( _manual_clone )); then
   source[0]=fetch-chromium-release
@@ -180,8 +174,9 @@ prepare() {
   # Arch Linux ARM fixes
   patch -p1 -i ../0001-widevine-support-for-arm.patch
   patch -p1 -i ../0002-Run-blink-bindings-generation-single-threaded.patch
-  patch -p1 -i ../0003-Fix-eu-strip-build-for-newer-GCC.patch
-  patch -p1 -i ../0004-Optimize-eu-strip-building-logic.patch
+
+   # use system eu-strip 
+  ln -sf /usr/bin/eu-strip buildtools/third_party/eu-strip/bin/eu-strip
 
   if [[ $CARCH == "armv7h" ]]; then
     export ALARM_NINJA_JOBS="4"
