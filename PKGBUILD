@@ -90,7 +90,7 @@ _mpp_patches=(
   '0015-HACK-ui-gl-Force-enabling-validating-command-decoder.patch'
   '0016-ui-gfx-linux-Force-disabling-modifiers.patch'
 )
-_mpp_commit='7f01be8b695ed27220c4fb3d92f96f65aeafc755'
+_mpp_commit='6ac0b9a2c15d520ab6ef03fb98c78b5e8388dbce'
 _mpp_parent="https://github.com/JeffyCN/meta-rockchip/raw/${_mpp_commit}/dynamic-layers/recipes-browser/chromium/chromium_${_pkgver_short}/"
 for _mpp_patch in ${_mpp_patches[@]}; do
   source+=("mpp-${_mpp_patch}::${_mpp_parent}${_mpp_patch}")
