@@ -38,6 +38,7 @@ pkgbase = chromium-mpp
 	depends = hicolor-icon-theme
 	depends = libv4l-rkmpp
 	depends = fontconfig
+	depends = aom
 	depends = libjpeg
 	depends = icu
 	depends = dav1d
