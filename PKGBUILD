@@ -159,6 +159,19 @@ depends+=(${_system_libs[@]})
 #  - Arch Linux ARM has obtained permission to use the Arch Linux keys.
 _google_api_key=AIzaSyDwr302FpOSkGRpLlUpPThNTDPbXcIn_FM
 
+_alarm_makeflags() {
+  case $ARCH in
+    'armv7h')
+      export ALARM_NINJA_JOBS="4"
+      export MAKEFLAGS="-j4"
+      ;;
+    'aarch64') # Allow build to set march and options on AArch64 (crc, crypto)
+      CFLAGS="${CFLAGS/-march=armv8-a}"
+      CXXFLAGS="$CFLAGS"
+      ;;
+  esac
+}
+
 prepare() {
   if (( _manual_clone )); then
     ./fetch-chromium-release $pkgver
@@ -176,13 +189,8 @@ prepare() {
    # use system eu-strip 
   ln -sf /usr/bin/eu-strip buildtools/third_party/eu-strip/bin/eu-strip
 
-  if [[ $CARCH == "armv7h" ]]; then
-    export ALARM_NINJA_JOBS="4"
-    export MAKEFLAGS="-j4"
-  fi
-
-  # Allow build to set march and options on AArch64 (crc, crypto)
-  [[ $CARCH == "aarch64" ]] && CFLAGS=`echo $CFLAGS | sed -e 's/-march=armv8-a//'` && CXXFLAGS="$CFLAGS"
+  # Update flags
+  _alarm_makeflags
 
   # https://crbug.com/893950
   sed -i -e 's/\<xmlMalloc\>/malloc/' -e 's/\<xmlFree\>/free/' \
@@ -322,6 +330,9 @@ build() {
     'use_v4lplugin=true'
     'use_linux_v4l2_only=true'
   )
+
+  # Update flags, in case prepare() was skipped
+  _alarm_makeflags
 
   # Facilitate deterministic builds (taken from build/config/compiler/BUILD.gn)
   CFLAGS+='   -Wno-builtin-macro-redefined'
