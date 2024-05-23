@@ -39,6 +39,7 @@ pkgbase = chromium-mpp
 	depends = libv4l-rkmpp
 	depends = fontconfig
 	depends = aom
+	depends = libvpx
 	depends = libjpeg
 	depends = icu
 	depends = dav1d
