@@ -160,7 +160,7 @@ depends+=(${_system_libs[@]})
 _google_api_key=AIzaSyDwr302FpOSkGRpLlUpPThNTDPbXcIn_FM
 
 _alarm_makeflags() {
-  case $ARCH in
+  case "${CARCH}" in
     'armv7h')
       export ALARM_NINJA_JOBS="4"
       export MAKEFLAGS="-j4"
