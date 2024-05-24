@@ -168,7 +168,6 @@ _alarm_makeflags() {
     'aarch64') # Allow build to set march and options on AArch64 (crc, crypto)
       CFLAGS="${CFLAGS/-march=armv8-a}"
       CXXFLAGS="${CFLAGS}"
-      CPPFLAGS="${CFLAGS}"
       ;;
   esac
 }
