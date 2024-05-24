@@ -167,7 +167,8 @@ _alarm_makeflags() {
       ;;
     'aarch64') # Allow build to set march and options on AArch64 (crc, crypto)
       CFLAGS="${CFLAGS/-march=armv8-a}"
-      CXXFLAGS="$CFLAGS"
+      CXXFLAGS="${CFLAGS}"
+      CPPFLAGS="${CFLAGS}"
       ;;
   esac
 }
@@ -360,6 +361,10 @@ build() {
 
   # https://crbug.com/957519#c122
   CXXFLAGS=${CXXFLAGS/-Wp,-D_GLIBCXX_ASSERTIONS}
+
+  echo "Building with CFLAGS: ${CFLAGS}"
+  echo "Building with CXXFLAGS: ${CXXFLAGS}"
+  echo "Building with CPPFLAGS: ${CPPFLAGS}"
 
   gn gen out/Release --args="${_flags[*]}"
   ninja -C out/Release chrome chrome_sandbox chromedriver.unstripped
