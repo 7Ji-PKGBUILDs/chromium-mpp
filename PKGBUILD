@@ -51,7 +51,8 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         compiler-rt-adjust-paths.patch
         use-oauth2-client-switches-as-default.patch
         0001-widevine-support-for-arm.patch
-        0002-Run-blink-bindings-generation-single-threaded.patch)
+        0002-Run-blink-bindings-generation-single-threaded.patch
+        0003-Add-missing-dependencies-on-chrome-browser-browser.patch)
 sha256sums=('51757e7ecf5bb1db4881562d021547be5f8065e4f22a6ba9bf6e9a3a0d32c2ea'
             '213e50f48b67feb4441078d50b0fd431df34323be15be97c55302d3fdac4483a'
             '1f6acf165578288dc84edc7d9dcfabf7d38f55153b63a37ee5afa929f0e2baad'
@@ -60,7 +61,8 @@ sha256sums=('51757e7ecf5bb1db4881562d021547be5f8065e4f22a6ba9bf6e9a3a0d32c2ea'
             'b3de01b7df227478687d7517f61a777450dca765756002c80c4915f271e2d961'
             'e393174d7695d0bafed69e868c5fbfecf07aa6969f3b64596d0bae8b067e1711'
             'b5bb3d0e2cd06aa92bb0ea62d6915dac1635cee79e9e1405cf17fe471baa393e'
-            '01c8742f987e158245959561db7f7529254a81491954174be2ef8a4f226cbf42')
+            '01c8742f987e158245959561db7f7529254a81491954174be2ef8a4f226cbf42'
+            '3b6006e0b4380033533e7ee48cd10e4fb2248ff920b9f8356f4f70745dc097be')
 
 if (( _manual_clone )); then
   source[0]=fetch-chromium-release
@@ -185,6 +187,9 @@ prepare() {
   # Arch Linux ARM fixes
   patch -p1 -i ../0001-widevine-support-for-arm.patch
   patch -p1 -i ../0002-Run-blink-bindings-generation-single-threaded.patch
+
+  # https://issues.chromium.org/issues/339401874
+  patch -p1 -i ../0003-Add-missing-dependencies-on-chrome-browser-browser.patch
 
    # use system eu-strip 
   ln -sf /usr/bin/eu-strip buildtools/third_party/eu-strip/bin/eu-strip
