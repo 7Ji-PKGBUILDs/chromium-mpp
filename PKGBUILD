@@ -3,7 +3,7 @@
 # Based on alarm/extra/chromium, with Rockchip MPP support
 #   alarm/extra/chromium is based on archlinux/extra/chromium
 
-# Maintainer: Evangelos Foutras <evangelos@foutrelis.com>
+# Maintainer: Evangelos Foutras <foutrelis@archlinux.org>
 # Contributor: Pierre Schmitz <pierre@archlinux.de>
 # Contributor: Jan "heftig" Steffens <jan.steffens@gmail.com>
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
@@ -21,8 +21,8 @@ highmem=1
 
 _pkgname=chromium
 pkgname=${_pkgname}-mpp
-_pkgver_short=122.0.6261
-pkgver=${_pkgver_short}.128
+_pkgver_short=126.0.6478
+pkgver=${_pkgver_short}.182
 pkgrel=1
 _launcher_ver=8
 _manual_clone=0
@@ -35,10 +35,9 @@ depends=('gtk3' 'nss' 'alsa-lib' 'xdg-utils' 'libxss' 'libcups' 'libgcrypt'
          'ttf-liberation' 'systemd' 'dbus' 'libpulse' 'pciutils' 'libva'
          'libffi' 'desktop-file-utils' 'hicolor-icon-theme')
 makedepends=('python' 'gn' 'ninja' 'clang' 'lld' 'gperf' 'nodejs' 'pipewire'
-             'rust' 'qt5-base' 'java-runtime-headless' 'git' 'elfutils')
+             'rust' 'qt5-base' 'qt6-base' 'java-runtime-headless' 'git' 'elfutils')
 optdepends=('pipewire: WebRTC desktop sharing under Wayland'
             'kdialog: support for native dialogs in Plasma'
-            'qt5-base: enable Qt5 with --enable-features=AllowQt'
             'gtk4: for --gtk-version=4 (GTK4 IME might work better on Wayland)'
             'org.freedesktop.secrets: password storage backend on GNOME / Xfce'
             'kwallet: support for storing passwords in KWallet on Plasma')
@@ -46,23 +45,21 @@ options=('!lto') # Chromium adds its own flags for ThinLTO
 source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver.tar.xz
         https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver/chromium-launcher-$_launcher_ver.tar.gz
         https://gitlab.com/Matt.Jolly/chromium-patches/-/archive/${pkgver%%.*}/chromium-patches-${pkgver%%.*}.tar.bz2
-        support-ICU-74-in-LazyTextBreakIterator.patch
+        allow-ANGLEImplementation-kVulkan.patch
         drop-flag-unsupported-by-clang17.patch
         compiler-rt-adjust-paths.patch
         use-oauth2-client-switches-as-default.patch
         0001-widevine-support-for-arm.patch
-        0002-Run-blink-bindings-generation-single-threaded.patch
-        0003-Add-missing-dependencies-on-chrome-browser-browser.patch)
-sha256sums=('51757e7ecf5bb1db4881562d021547be5f8065e4f22a6ba9bf6e9a3a0d32c2ea'
+        0002-Run-blink-bindings-generation-single-threaded.patch)
+sha256sums=('3939f5b3116ebd3cb15ff8c7059888f6b00f4cfa8a77bde983ee4ce5d0eea427'
             '213e50f48b67feb4441078d50b0fd431df34323be15be97c55302d3fdac4483a'
-            '1f6acf165578288dc84edc7d9dcfabf7d38f55153b63a37ee5afa929f0e2baad'
-            '8c256b2a9498a63706a6e7a55eadbeb8cc814be66a75e49aec3716c6be450c6c'
-            '3bd35dab1ded5d9e1befa10d5c6c4555fe0a76d909fb724ac57d0bf10cb666c1'
+            'daf0df74d2601c35fd66a746942d9ca3fc521ede92312f85af51d94c399fd6e0'
+            '8f81059d79040ec598b5fb077808ec69d26d6c9cbebf9c4f4ea48b388a2596c5'
+            '028acc97299cec5d1ed9f456bbdc462807fa491277d266db2aa1d405d3cd753d'
             'b3de01b7df227478687d7517f61a777450dca765756002c80c4915f271e2d961'
-            'e393174d7695d0bafed69e868c5fbfecf07aa6969f3b64596d0bae8b067e1711'
-            'b5bb3d0e2cd06aa92bb0ea62d6915dac1635cee79e9e1405cf17fe471baa393e'
-            '01c8742f987e158245959561db7f7529254a81491954174be2ef8a4f226cbf42'
-            '3b6006e0b4380033533e7ee48cd10e4fb2248ff920b9f8356f4f70745dc097be')
+            'a9b417b96daec33c9059065e15b3a92ae1bf4b59f89d353659b335d9e0379db6'
+            'd7e03bb0ca10ed30cf8a427d6d382623930d1cefdeb673ed3ed9babcdfd62503'
+            '494d5c3cd7901ec16ff9f66e34f550b2ebc52d02fdc744f444843cfcc79def2b')
 
 if (( _manual_clone )); then
   source[0]=fetch-chromium-release
@@ -90,40 +87,41 @@ _mpp_patches=(
   '0013-content-gpu-Only-depend-dri-for-X11.patch'
   '0014-media-gpu-sandbox-Only-depend-dri-for-X11.patch'
   '0015-ui-gfx-linux-Force-disabling-modifiers.patch'
+  '0016-HACK-ui-x11-Fix-config-choosing-error-with-Mali-DDK.patch'
 )
-_mpp_commit='6ac0b9a2c15d520ab6ef03fb98c78b5e8388dbce'
+_mpp_commit='164950523c602cc74b4d8d06750215f59d3b3db1'
 _mpp_parent="https://github.com/JeffyCN/meta-rockchip/raw/${_mpp_commit}/dynamic-layers/recipes-browser/chromium/chromium_${_pkgver_short}/"
 for _mpp_patch in ${_mpp_patches[@]}; do
   source+=("mpp-${_mpp_patch}::${_mpp_parent}${_mpp_patch}")
 done
 # Local patches on top of the MPP patches
-_mpp_arch_patches=('0001-gpu-sandbox-always-lookup-libv4l2-at-usr-lib-libv4l2.patch')
+_mpp_arch_patches=('0001-media-sandbox-always-lookup-libv4l2-at-usr-lib-libv4.patch')
 source+=(mpp-arch-"${_mpp_arch_patches[0]}")
 sha256sums+=(
   # MPP patches
-  'bb248d44a80aae7c089a179f2cbf3b9727f8f83e889f2cf3f3b9d60151174fb9'
-  'ba854d12f91e47c7abe9536eaef8c512486fc876383e1f9c9f4a4532104191ce'
-  '76c6dab225cf0dfe7a258738dfa73707f62859d3dcd2381144adb9770df26d9d'
-  '1987977e184b9feed66db169d63734ac5145913720428a49d18058b58928fb7c'
-  'eb238021faee4d21123b5cf94a73e4ac53c0b03e7e188f100f879af3a47fe5cf'
-  '667a3c6024a5a5a087cf36f0250b1559992103dead7a8d8fb590176b67d1351f'
-  '81ad86b8aa770ee93d70ee52b4c14eca86d5953dce9d8a96823b18064dac8b2f'
-  '47fc4b6d00e43e91b6229b51fc4380a76a19d06ea4ccdb29ccb3b53c14f8c015'
-  '7b599c97371fa165d0d3cbd9c79c34ad3adabd65f382871dcb98b797bfbef737'
-  'ef3f9ef2aa4c5514aec46006a5ac299c9ab79432f4bdd279e02896a4bceca597'
-  '2f21527a31ac0114008d3bc181aae1165ee57da9748edd13405b3efa3a8fea9c'
-  '32b53abac0511a2fddf7b851d036fd07e008a486dd30f4bd81f608b07c2a1827'
-  '3d4eedc58535f66bc1d96a0078d97180786ec1cca8286c4bdd71bfa95aa9d199'
-  '70039033dd1da0fa443b7969034bc41e19ae8cb3ea66a21c755fa9bd7a268f09'
-  '142bce5fcd4c5204aa9bcc4acd7aae5295b9b38420d73d5d2bb56e367dcc0dec'
+  'e887b626f9bc475effeb7c1a1d5def9cda1bd7bfb5fca18a29f93f26d2b2748f'
+  '288def8af27979573e3ed0113d8860a0e823f65988624906a1e4c158264b35aa'
+  'bea5d748fd1ef8ba8085f45b001f1bb79d9324dfa695ee9bb5b52bdb9c368e88'
+  'c688660f583f2f540b1ad11bdee7fa5d8dbe63fe477091a8c3e92d041e0af5c8'
+  '9e2af2d5c9570a73eb2f2f30d5ad1a967d9452a1d234e206384ab5c34704e966'
+  'b267867103be6a40ad21fa1293e0548fb84df31e6609e29a93f4375dcf66dbb2'
+  'a7dde27ed9fd0f25eba8674ca440886984e623d51a235e975e62f45f13a31a43'
+  '79415aa937a21117179aa72d24664ce3b2cff10e0573c0ae7f905d1c00473778'
+  'fe86c19576c01d7e57f81856a616582d81d368a68b949d5c46428558d29fd655'
+  'fcd809d92a4524c226804dd5168f002cbfdef778a24c4a7bed7d6442e6206aeb'
+  '2c89ce54aa82411f41f5bc6cda98067807c80800559658038e59ef07e54e99cc'
+  'c094dee92301e07997def872c4918d7f1f908cf6e4ae059b668c31cc9c9452a0'
+  '00a5ff2980040b8c711c9f712fbbfc0572e6efd18009b89336da721aa744f566'
+  '1feb5af6618b13ba185e5779914d1a7c7b2973c9fbdfde2b2565e2c2a90946d5'
+  '27724358b9d6615e73d8f19ef2158a02344616e10bbd4db6f944a2cc3aa1a11e'
+  'dc8784e218cb0065119fc688cb79d9a25c644c54032b668e4da4439cafe804cb'
   # Local patches on top of the MPP patches
-  'dd35502f7ec6452bb885482403e131986b9fbbf6aebb6910ac747fc169bbfe73'
+  'ca909939f0ed659238c796f2ffb109677d51c17ac765ac8a857344fa235c2033'
 )
-
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
 # Keys are the names in the above script; values are the dependencies in Arch
 declare -gA _system_libs=(
-  #[brotli]=brotli
+  [brotli]=brotli
   [dav1d]=dav1d
   #[ffmpeg]=ffmpeg    # YouTube playback stopped working in Chromium 120
   [flac]=flac
@@ -188,17 +186,17 @@ prepare() {
   patch -p1 -i ../0001-widevine-support-for-arm.patch
   patch -p1 -i ../0002-Run-blink-bindings-generation-single-threaded.patch
 
-  # https://issues.chromium.org/issues/339401874
-  patch -p1 -i ../0003-Add-missing-dependencies-on-chrome-browser-browser.patch
-
-   # use system eu-strip 
+  # use system eu-strip 
   ln -sf /usr/bin/eu-strip buildtools/third_party/eu-strip/bin/eu-strip
 
   # Update flags
   _alarm_makeflags
 
+  CFLAGS="${CFLAGS/_FORTIFY_SOURCE=3/_FORTIFY_SOURCE=2}" && CXXFLAGS="$CFLAGS"
+
   # https://crbug.com/893950
   sed -i -e 's/\<xmlMalloc\>/malloc/' -e 's/\<xmlFree\>/free/' \
+         -e '1i #include <cstdlib>' \
     third_party/blink/renderer/core/xml/*.cc \
     third_party/blink/renderer/core/xml/parser/xml_document_parser.cc \
     third_party/libxml/chromium/*.cc \
@@ -210,7 +208,7 @@ prepare() {
   patch -Np1 -i ../use-oauth2-client-switches-as-default.patch
 
   # Upstream fixes
-  patch -Np1 -i ../support-ICU-74-in-LazyTextBreakIterator.patch
+  patch -Np1 -i ../allow-ANGLEImplementation-kVulkan.patch
 
   # Drop compiler flag that needs newer clang
   patch -Np1 -i ../drop-flag-unsupported-by-clang17.patch
@@ -219,7 +217,6 @@ prepare() {
   patch -Np1 -i ../compiler-rt-adjust-paths.patch
 
   # Fixes for building with libstdc++ instead of libc++
-  patch -Np1 -i ../chromium-patches-*/chromium-114-ruy-include.patch
   patch -Np1 -i ../chromium-patches-*/chromium-117-material-color-include.patch
 
   # MPP Patches
@@ -298,6 +295,8 @@ build() {
     'enable_hangout_services_extension=true'
     'enable_widevine=true'
     'enable_nacl=false'
+    'use_qt6=true'
+    'moc_qt6_path="/usr/lib/qt6"'
     "google_api_key=\"$_google_api_key\""
   )
 
@@ -410,6 +409,7 @@ package() {
     chrome_200_percent.pak
     chrome_crashpad_handler
     libqt5_shim.so
+    libqt6_shim.so
     resources.pak
     v8_context_snapshot.bin
 

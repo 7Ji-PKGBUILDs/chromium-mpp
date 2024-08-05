@@ -1,0 +1,74 @@
+From e9d0053013fd103f61cb021c9e73cf85557c4905 Mon Sep 17 00:00:00 2001
+From: Guoxin Pu <pugokushin@gmail.com>
+Date: Tue, 6 Aug 2024 14:19:48 +0800
+Subject: [PATCH] media sandbox: always lookup libv4l2 at /usr/lib/libv4l2.so
+
+By default, libv4l2 is looked up at /usr/lib64/libv4l2.so when system is 64bit,
+and is looked up at /usr/lib/libv4l2.so when not, this meets the Debian/RH file
+system hierarchy, but not the Arch FSH, as we always store native libraries
+under /usr/lib, regardless of the bitness of the native userspace.
+
+Changing the lookup path to always /usr/lib/libv4l2.so
+---
+ media/capture/video/linux/v4l2_capture_device_impl.cc | 7 +------
+ media/gpu/v4l2/v4l2_device.cc                         | 7 +------
+ media/gpu/v4l2/v4l2_utils.cc                          | 7 +------
+ 3 files changed, 3 insertions(+), 18 deletions(-)
+
+diff --git a/media/capture/video/linux/v4l2_capture_device_impl.cc b/media/capture/video/linux/v4l2_capture_device_impl.cc
+index b9fa8ef..f6fe66a 100644
+--- a/media/capture/video/linux/v4l2_capture_device_impl.cc
++++ b/media/capture/video/linux/v4l2_capture_device_impl.cc
+@@ -19,12 +19,7 @@ using media_gpu_v4l2::kModuleV4l2;
+ using media_gpu_v4l2::InitializeStubs;
+ using media_gpu_v4l2::StubPathMap;
+ 
+-inline static constexpr char kLibV4l2Path[] =
+-#if defined(__aarch64__)
+-      "/usr/lib64/libv4l2.so";
+-#else
+-      "/usr/lib/libv4l2.so";
+-#endif
++inline static constexpr char kLibV4l2Path[] = "/usr/lib/libv4l2.so";
+ #endif
+ 
+ namespace media {
+diff --git a/media/gpu/v4l2/v4l2_device.cc b/media/gpu/v4l2/v4l2_device.cc
+index d10541f..b00aebd 100644
+--- a/media/gpu/v4l2/v4l2_device.cc
++++ b/media/gpu/v4l2/v4l2_device.cc
+@@ -43,12 +43,7 @@ using media_gpu_v4l2::InitializeStubs;
+ using media_gpu_v4l2::kModuleV4l2;
+ using media_gpu_v4l2::StubPathMap;
+ 
+-inline static constexpr char kLibV4l2Path[] =
+-#if defined(__aarch64__)
+-      "/usr/lib64/libv4l2.so";
+-#else
+-      "/usr/lib/libv4l2.so";
+-#endif
++inline static constexpr char kLibV4l2Path[] = "/usr/lib/libv4l2.so";
+ 
+ namespace media {
+ 
+diff --git a/media/gpu/v4l2/v4l2_utils.cc b/media/gpu/v4l2/v4l2_utils.cc
+index 98b26a8..b20061e 100644
+--- a/media/gpu/v4l2/v4l2_utils.cc
++++ b/media/gpu/v4l2/v4l2_utils.cc
+@@ -52,12 +52,7 @@ using media_gpu_v4l2::InitializeStubs;
+ using media_gpu_v4l2::kModuleV4l2;
+ using media_gpu_v4l2::StubPathMap;
+ 
+-inline static constexpr char kLibV4l2Path[] =
+-#if defined(__aarch64__)
+-      "/usr/lib64/libv4l2.so";
+-#else
+-      "/usr/lib/libv4l2.so";
+-#endif
++inline static constexpr char kLibV4l2Path[] = "/usr/lib/libv4l2.so";
+ 
+ static bool use_libv4l2_ = false;
+ 
+-- 
+2.46.0
+
