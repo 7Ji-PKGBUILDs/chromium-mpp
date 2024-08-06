@@ -1,13 +1,13 @@
 To make sure MPP works for Chromium:
 
-  - The dependency `libv4l-rkmpp-git` needs [SoC-specific setup](https://github.com/7Ji-PKGBUILDs/libv4l-rkmpp-git), if not set it won't work. For RK3588(s), running the following command once is enough:
-```
-sudo systemctl enable --now libv4l-rkmpp-setup.service
-```
-  - You must run Chromium with Mali blob drivers with EGL for the MPP decoding pipeline to work, e.g. for [libmali of Valhall G610 under X11](https://github.com/7Ji-PKGBUILDs/libmali-valhall-g610-x11-gbm), use the following command:
-```
-LD_LIBRARY_PATH=/usr/lib/mali-valhall-g610/x11-gbm chromium --use-gl=egl
-```
+- The dependency `libv4l-rkmpp-git` needs [SoC-specific setup](https://github.com/7Ji-PKGBUILDs/libv4l-rkmpp-git), if not set it won't work. For RK3588(s), running the following command once is enough:
+  ```
+  sudo systemctl enable --now libv4l-rkmpp-setup.service
+  ```
+- You must run on X11 + mali blob driver + panfork mesa + 5.10 BSP kernel. For [libmali of Valhall G610 under X11](https://github.com/7Ji-PKGBUILDs/libmali-valhall-g610-x11-gbm), use the following command:
+  ```
+  LD_LIBRARY_PATH=/usr/lib/mali-valhall-g610/x11-gbm chromium --use-gl=angle --use-angle=gles-egl --use-cmd-decoder=passthrough
+  ```
 
 ---
 
