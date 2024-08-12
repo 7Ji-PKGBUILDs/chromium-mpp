@@ -1,4 +1,4 @@
 post_install() {
-    echo "WARNING: You must run Chromium with Mali blob drivers with EGL for the MPP decoding pipeline to work"
-    echo "WARNING: E.g. 'LD_LIBRARY_PATH=/parent/folder/of/mali/libEGL.so chromium --use-gl=egl'"
+    echo "WARNING: You must run Chromium with Mali blob drivers with EGL for the MPP decoding pipeline to work, and currently it only works on BSP 5.10 kernel + X11"
+    echo "WARNING: E.g. 'LD_LIBRARY_PATH=/usr/lib/mali-valhall-g610/x11-gbm chromium --use-gl=angle --use-angle=gles-egl --use-cmd-decoder=passthrough'"
 }
