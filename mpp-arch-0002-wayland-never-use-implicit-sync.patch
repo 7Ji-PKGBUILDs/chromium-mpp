@@ -1,0 +1,35 @@
+From 230a78ad7c1120f262bf383005b0e5ae65dc6439 Mon Sep 17 00:00:00 2001
+From: Guoxin Pu <pugokushin@gmail.com>
+Date: Fri, 18 Oct 2024 16:46:55 +0800
+Subject: [PATCH] wayland: never use implicit sync
+
+Current chromium logic is to use it for kernels that "supposedly" supports
+implicit sync, that is, any kernel >= 6.0. However, our BSP kernels never
+follow the mainline feature set, and implicit sync is yet another
+feature they do not support.
+
+Disable it always by making function
+ui::WaylandConnection::UseImplicitSyncInterop always return false  so
+we touch as few codes as possible, and hopefully clang would inline and
+kill the dead codes.
+---
+ ui/ozone/platform/wayland/host/wayland_connection.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/ui/ozone/platform/wayland/host/wayland_connection.h b/ui/ozone/platform/wayland/host/wayland_connection.h
+index 12f0c7649e..dcae729a15 100644
+--- a/ui/ozone/platform/wayland/host/wayland_connection.h
++++ b/ui/ozone/platform/wayland/host/wayland_connection.h
+@@ -360,8 +360,7 @@ class WaylandConnection {
+   void DumpState(std::ostream& out) const;
+ 
+   bool UseImplicitSyncInterop() const {
+-    return !linux_explicit_synchronization_v1() &&
+-           WaylandBufferManagerHost::SupportsImplicitSyncInterop();
++    return false;
+   }
+ 
+   // Returns a sync callback, which is invoked when the server has processed all
+-- 
+2.47.0
+
