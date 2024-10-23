@@ -23,7 +23,7 @@ _pkgname=chromium
 pkgname=${_pkgname}-mpp
 _pkgver_short=129.0.6668
 pkgver=${_pkgver_short}.100
-pkgrel=1
+pkgrel=2
 _launcher_ver=8
 _manual_clone=0
 _system_clang=1
@@ -230,6 +230,11 @@ prepare() {
     patch -Np1 -i ../mpp-${_mpp_patch}
   done
 
+  # MPP Patches
+  for _mpp_arch_patch in ${_mpp_arch_patches[@]}; do
+    patch -Np1 -i ../mpp-arch-${_mpp_arch_patch}
+  done
+
   # Link to system tools required by the build
   rm third_party/node/linux/node-linux-x64/bin/node
   ln -s /usr/bin/node third_party/node/linux/node-linux-x64/bin/
@@ -239,7 +244,7 @@ prepare() {
   # "//third_party/icu:icuuc_public" (taken from Gentoo ebuild)
   sed -i '/source_set("unit_tests") {/,/}/d' chrome/browser/ui/lens/BUILD.gn
   sed -i '/lens:unit_tests/d' chrome/test/BUILD.gn components/BUILD.gn
-  
+
   if (( !_system_clang )); then
     # Use prebuilt rust as system rust cannot be used due to the error:
     #   error: the option `Z` is only accepted on the nightly compiler

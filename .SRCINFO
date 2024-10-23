@@ -1,7 +1,7 @@
 pkgbase = chromium-mpp
 	pkgdesc = A web browser built for speed, simplicity, and security. Patched with Rockchip MPP support.
 	pkgver = 129.0.6668.100
-	pkgrel = 1
+	pkgrel = 2
 	url = https://www.chromium.org/Home
 	install = chromium-mpp.install
 	arch = x86_64
