@@ -1,6 +1,6 @@
-From 230a78ad7c1120f262bf383005b0e5ae65dc6439 Mon Sep 17 00:00:00 2001
-From: Guoxin Pu <pugokushin@gmail.com>
-Date: Fri, 18 Oct 2024 16:46:55 +0800
+From c459043572f18e6df9128a7418187d2a69cdc393 Mon Sep 17 00:00:00 2001
+From: 7Ji <pugokushin@gmail.com>
+Date: Wed, 26 Mar 2025 15:41:53 +0800
 Subject: [PATCH] wayland: never use implicit sync
 
 Current chromium logic is to use it for kernels that "supposedly" supports
@@ -17,19 +17,19 @@ kill the dead codes.
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/ui/ozone/platform/wayland/host/wayland_connection.h b/ui/ozone/platform/wayland/host/wayland_connection.h
-index 12f0c7649e..dcae729a15 100644
+index 6466f90..58ca04c 100644
 --- a/ui/ozone/platform/wayland/host/wayland_connection.h
 +++ b/ui/ozone/platform/wayland/host/wayland_connection.h
-@@ -360,8 +360,7 @@ class WaylandConnection {
+@@ -359,8 +359,7 @@ class WaylandConnection {
    void DumpState(std::ostream& out) const;
  
    bool UseImplicitSyncInterop() const {
--    return !linux_explicit_synchronization_v1() &&
+-    return !SupportsExplicitSync() &&
 -           WaylandBufferManagerHost::SupportsImplicitSyncInterop();
 +    return false;
    }
  
    // Returns a sync callback, which is invoked when the server has processed all
 -- 
-2.47.0
+2.49.0
 
