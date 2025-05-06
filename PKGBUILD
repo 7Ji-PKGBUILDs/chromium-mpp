@@ -23,7 +23,7 @@ _pkgname=chromium
 pkgname=${_pkgname}-mpp
 _pkgver_short=132.0.6834
 pkgver=${_pkgver_short}.159
-pkgrel=1
+pkgrel=2
 _launcher_ver=8
 _manual_clone=0
 _system_clang=1
@@ -95,6 +95,7 @@ done
 _mpp_arch_patches=(
   '0001-media-sandbox-always-lookup-libv4l2-at-usr-lib-libv4.patch'
   '0002-wayland-never-use-implicit-sync.patch'
+  '0003-rust-std-adapt-to-Arch-rust-adler2-upgrade.patch'
 )
 for _mpp_patch in "${_mpp_arch_patches[@]}"; do
   source+=("mpp-arch-${_mpp_patch}")
@@ -119,6 +120,7 @@ sha256sums+=(
   # Local patches on top of the MPP patches
   'ca909939f0ed659238c796f2ffb109677d51c17ac765ac8a857344fa235c2033'
   '35d405b5534ad88f741abfe875684fa755ff7ce9bb56bcb1e697d82a83f4a5c7'
+  '9e5b55a0d5a6609af004ce19a31991c256072ebb61ab1d0c0a3979e71c07377a'
 )
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py

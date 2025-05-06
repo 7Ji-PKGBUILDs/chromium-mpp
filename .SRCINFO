@@ -1,7 +1,7 @@
 pkgbase = chromium-mpp
 	pkgdesc = A web browser built for speed, simplicity, and security. Patched with Rockchip MPP support.
 	pkgver = 132.0.6834.159
-	pkgrel = 1
+	pkgrel = 2
 	url = https://www.chromium.org/Home
 	install = chromium-mpp.install
 	arch = x86_64
@@ -87,6 +87,7 @@ pkgbase = chromium-mpp
 	source = mpp-0015-HACK-ui-x11-Fix-config-choosing-error-with-Mali-DDK.patch::https://github.com/JeffyCN/meta-rockchip/raw/57fc3750503963c2986c0725ee6f269d32158073/dynamic-layers/recipes-browser/chromium/chromium_132.0.6834/0015-HACK-ui-x11-Fix-config-choosing-error-with-Mali-DDK.patch
 	source = mpp-arch-0001-media-sandbox-always-lookup-libv4l2-at-usr-lib-libv4.patch
 	source = mpp-arch-0002-wayland-never-use-implicit-sync.patch
+	source = mpp-arch-0003-rust-std-adapt-to-Arch-rust-adler2-upgrade.patch
 	sha256sums = 564cc8a258b16d1c6151721a2a72e43ba80642326b33aa79439bba354e686068
 	sha256sums = 213e50f48b67feb4441078d50b0fd431df34323be15be97c55302d3fdac4483a
 	sha256sums = b3de01b7df227478687d7517f61a777450dca765756002c80c4915f271e2d961
@@ -111,5 +112,6 @@ pkgbase = chromium-mpp
 	sha256sums = 1d001e9b3178b948245b74b292b745413712aad5fbc0b09711f0b225ddbfed9c
 	sha256sums = ca909939f0ed659238c796f2ffb109677d51c17ac765ac8a857344fa235c2033
 	sha256sums = 35d405b5534ad88f741abfe875684fa755ff7ce9bb56bcb1e697d82a83f4a5c7
+	sha256sums = 9e5b55a0d5a6609af004ce19a31991c256072ebb61ab1d0c0a3979e71c07377a
 
 pkgname = chromium-mpp
